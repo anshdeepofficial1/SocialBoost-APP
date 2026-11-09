@@ -31,7 +31,7 @@ import org.json.JSONObject
 enum class Destination(val label: String) {
     HOME("Overview"), CREATE("Create"), CALENDAR("Calendar"),
     INSIGHTS("Insights"), LIBRARY("Library"), ANALYZE("Analyze"),
-    HOOK("Hook Lab"), PREDICTIONS("Predictions"), PLATFORMS("Platforms"),
+    HOOK("Hook Lab"), PREDICTIONS("Predictions"), GROWTH("Growth Coach"), PLATFORMS("Platforms"),
     YOUTUBE("YouTube Studio"), RECOMMENDATIONS("Recommendations"),
     DATASETS("Datasets"), ACCOUNTS("Accounts"), DRAFTS("Drafts"),
     SETTINGS("Settings"), AUTOPILOT("Autopilot")
@@ -212,6 +212,7 @@ private fun StudioShell(
                 Destination.ANALYZE -> AnalyzeScreen(api) { page = it }
                 Destination.HOOK -> HookLabScreen(api)
                 Destination.PREDICTIONS -> PredictionsScreen(api)
+                Destination.GROWTH -> GrowthCoachScreen(api)
                 Destination.PLATFORMS -> PlatformsScreen(api)
                 Destination.YOUTUBE -> YouTubeScreen(api)
                 Destination.RECOMMENDATIONS -> RecommendationsScreen(api) { page = it }
@@ -231,7 +232,7 @@ private fun StudioShell(
                 Text(account?.optString("email") ?: "SocialBoost", style = MaterialTheme.typography.titleMedium)
                 Spacer(Modifier.height(12.dp))
                 val destinations = listOf(
-                    Destination.ANALYZE, Destination.HOOK, Destination.PREDICTIONS,
+                    Destination.ANALYZE, Destination.HOOK, Destination.PREDICTIONS, Destination.GROWTH,
                     Destination.PLATFORMS, Destination.YOUTUBE, Destination.RECOMMENDATIONS,
                     Destination.DATASETS, Destination.ACCOUNTS, Destination.DRAFTS,
                     Destination.AUTOPILOT, Destination.SETTINGS
