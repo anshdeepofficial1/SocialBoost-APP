@@ -36,11 +36,9 @@ jobs:
             adb install -r app/build/outputs/apk/debug/app-debug.apk
             adb shell am start -n com.socialboost.app/.MainActivity
             sleep 12
-            if ! adb shell pidof com.socialboost.app; then
-              adb logcat -d -t 300 | tail -100
-              echo "App process not alive after launch"
-              exit 1
-            fi
+            adb shell pidof com.socialboost.app
+            adb shell dumpsys activity activities | grep com.socialboost.app
+            adb logcat -d -t 300 > screenshots-smoke.log
             mkdir -p screenshots
             adb exec-out screencap -p > screenshots/login-screen.png
             test -s screenshots/login-screen.png
