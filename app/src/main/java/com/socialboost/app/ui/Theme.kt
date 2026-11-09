@@ -1,6 +1,5 @@
 package com.socialboost.app.ui
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.darkColorScheme
@@ -43,6 +42,6 @@ private val type = Typography(
 )
 
 @Composable
-fun SocialBoostTheme(darkMode: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
+fun SocialBoostTheme(darkMode: Boolean = false, content: @Composable () -> Unit) {
     MaterialTheme(colorScheme = if (darkMode) dark else light, typography = type, content = content)
 }

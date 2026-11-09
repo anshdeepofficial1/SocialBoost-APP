@@ -43,6 +43,7 @@ fun SocialBoostApp() {
     val session = remember { SecureSession(context) }
     val api = remember { SocialApi(context, session) }
     var loggedIn by remember { mutableStateOf(session.token() != null) }
+    var darkTheme by remember { mutableStateOf(false) }
     var account by remember { mutableStateOf<JSONObject?>(null) }
     var connectionError by remember { mutableStateOf<String?>(null) }
     var check by remember { mutableIntStateOf(0) }
@@ -50,6 +51,8 @@ fun SocialBoostApp() {
         if (loggedIn) {
             try {
                 account = api.request("/auth/me").asObject()
+                val prefs = api.request("/settings/preferences").asObject()
+                darkTheme = prefs.optString("theme") == "dark"
                 connectionError = null
             } catch (e: ApiException) {
                 if (e.code == 401) {
@@ -62,17 +65,24 @@ fun SocialBoostApp() {
             }
         }
     }
-    if (!loggedIn) {
-        Authentication(api, session) {
-            account = null
-            loggedIn = true
-            check++
-        }
-    } else {
-        StudioShell(api, account, connectionError, onRetry = { check++ }) {
-            session.clear()
-            account = null
-            loggedIn = false
+    SocialBoostTheme(darkMode = darkTheme) {
+        if (!loggedIn) {
+            Authentication(api, session) {
+                account = null
+                loggedIn = true
+                check++
+            }
+        } else {
+            StudioShell(
+                api, account, connectionError,
+                onRetry = { check++ },
+                onThemeChanged = { darkTheme = it }
+            ) {
+                session.clear()
+                account = null
+                darkTheme = false
+                loggedIn = false
+            }
         }
     }
 }
@@ -154,6 +164,7 @@ private fun StudioShell(
     account: JSONObject?,
     connectionError: String?,
     onRetry: () -> Unit,
+    onThemeChanged: (Boolean) -> Unit,
     onLogout: () -> Unit,
 ) {
     var page by remember { mutableStateOf(Destination.HOME) }
@@ -219,7 +230,7 @@ private fun StudioShell(
                 Destination.DATASETS -> DatasetsScreen(api)
                 Destination.ACCOUNTS -> AccountsScreen(api)
                 Destination.DRAFTS -> DraftsScreen(api)
-                Destination.SETTINGS -> SettingsScreen(api)
+                Destination.SETTINGS -> SettingsScreen(api, onThemeChanged)
                 Destination.AUTOPILOT -> AutopilotScreen(api)
             }
             Spacer(Modifier.height(24.dp))

@@ -216,7 +216,7 @@ fun DraftsScreen(api: SocialApi) {
 }
 
 @Composable
-fun SettingsScreen(api: SocialApi) {
+fun SettingsScreen(api: SocialApi, onThemeChanged: (Boolean) -> Unit) {
     val scope = rememberCoroutineScope()
     var revision by remember { mutableIntStateOf(0) }
     var preferences by remember { mutableStateOf<JSONObject?>(null) }
@@ -258,6 +258,7 @@ fun SettingsScreen(api: SocialApi) {
                             .put("theme", if (dark) "dark" else "light")
                             .put("platforms", listOfNotNull("instagram".takeIf { instagram }, "youtube".takeIf { youtube }).joinToString(",")))
                         notice = "Preferences saved."
+                        onThemeChanged(dark)
                         preferences = null
                         revision++
                     } catch (e: Exception) { notice = e.message ?: "Could not save." }
