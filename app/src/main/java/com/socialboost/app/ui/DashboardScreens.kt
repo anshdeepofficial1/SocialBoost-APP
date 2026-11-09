@@ -17,6 +17,8 @@ import org.json.JSONObject
 @Composable
 fun DashboardScreen(api: SocialApi, account: JSONObject?, navigate: (Destination) -> Unit) {
     Headline("YOUR STUDIO", "Create smarter.\nGrow from evidence.", "Welcome " + (account?.optString("full_name")?.takeIf { it.isNotBlank() } ?: "creator") + ". Real channel numbers, real history, one workspace.")
+    EditorialHero("CREATOR INTELLIGENCE", "READ THE SIGNAL.\nMAKE THE NEXT MOVE.", "One clear view of your own content performance. No synthetic numbers.")
+    Spacer(Modifier.height(16.dp))
     RemotePanel("home", load = {
         JSONObject()
             .put("summary", api.request("/analytics/summary").asObject())

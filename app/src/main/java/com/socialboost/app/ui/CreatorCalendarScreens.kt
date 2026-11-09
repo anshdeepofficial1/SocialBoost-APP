@@ -26,6 +26,8 @@ fun CreateScreen(api: SocialApi, navigate: (Destination) -> Unit) {
     var busy by remember { mutableStateOf(false) }
     var message by remember { mutableStateOf("") }
     Headline("CREATE STUDIO · EARLY ACCESS", "Make every post\nintentional.", "Develop hooks and captions from your own trained creator voice. Server video rendering is not implemented in the current SocialBoost backend.")
+    EditorialHero("CREATIVE WORKSPACE", "IDEA → EVIDENCE\n→ BETTER CONTENT.", "Use your account’s trained voice and save selected concepts, without pretending an MP4 already exists.")
+    Spacer(Modifier.height(16.dp))
     SbCard {
         SectionEyebrow("01 / YOUR CREATIVE BRIEF")
         Spacer(Modifier.height(10.dp))

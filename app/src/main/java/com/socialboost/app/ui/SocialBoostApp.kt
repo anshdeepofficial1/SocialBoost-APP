@@ -319,6 +319,29 @@ fun SbCard(content: @Composable ColumnScope.() -> Unit) {
 }
 
 @Composable
+fun EditorialHero(eyebrow: String, title: String, explanation: String) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        color = Ink
+    ) {
+        Column(Modifier.padding(24.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(Modifier.size(width = 25.dp, height = 3.dp).background(Signal))
+                Spacer(Modifier.width(10.dp))
+                Text(eyebrow, color = Color(0xFFFF8660), style = MaterialTheme.typography.labelSmall, letterSpacing = 1.sp)
+            }
+            Spacer(Modifier.height(18.dp))
+            Text(title, fontSize = 30.sp, lineHeight = 33.sp, fontWeight = FontWeight.Bold, color = Color(0xFFF4F3EE))
+            Spacer(Modifier.height(12.dp))
+            Text(explanation, color = Color(0xFFB8B8AE), style = MaterialTheme.typography.bodyMedium)
+            Spacer(Modifier.height(14.dp))
+            Box(Modifier.width(68.dp).height(3.dp).background(Color(0xFF41413A)))
+        }
+    }
+}
+
+@Composable
 fun Metric(label: String, amount: String, hint: String? = null) {
     SbCard {
         SectionEyebrow(label.uppercase())
