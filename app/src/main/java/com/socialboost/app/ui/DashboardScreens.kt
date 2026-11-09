@@ -167,23 +167,28 @@ fun LibraryScreen(api: SocialApi, navigate: (Destination) -> Unit) {
 
 @Composable
 fun AnalyzeScreen(api: SocialApi, navigate: (Destination) -> Unit) {
-    val scope = rememberCoroutineScope()
-    val pick = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-        if (uri != null) {
-            selected = uri
-        }
+    var selectedUri by remember { mutableStateOf<android.net.Uri?>(null) }
+    val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        selectedUri = uri
     }
-    // File-picker state lives in a separate remembered holder below, allowing this
-    // screen to accept both selected media and previously uploaded videos.
-    AnalyzeContent(api, openPicker = { pick.launch(arrayOf("video/*")) }, navigate = navigate)
+    AnalyzeContent(
+        api = api,
+        selectedUri = selectedUri,
+        onSelectedClear = { selectedUri = null },
+        openPicker = { picker.launch(arrayOf("video/*")) },
+        navigate = navigate
+    )
 }
 
-private var selected: android.net.Uri? = null
-
 @Composable
-private fun AnalyzeContent(api: SocialApi, openPicker: () -> Unit, navigate: (Destination) -> Unit) {
+private fun AnalyzeContent(
+    api: SocialApi,
+    selectedUri: android.net.Uri?,
+    onSelectedClear: () -> Unit,
+    openPicker: () -> Unit,
+    navigate: (Destination) -> Unit
+) {
     val scope = rememberCoroutineScope()
-    var selectedUri by remember { mutableStateOf(selected) }
     var uploadJobId by remember { mutableStateOf<String?>(null) }
     var activeVideo by remember { mutableStateOf<String?>(null) }
     var job by remember { mutableStateOf<JSONObject?>(null) }
@@ -208,8 +213,7 @@ private fun AnalyzeContent(api: SocialApi, openPicker: () -> Unit, navigate: (De
                         activeVideo = result.optString("video_id")
                         uploadJobId = result.optString("job_id")
                         revision++
-                        selectedUri = null
-                        selected = null
+                        onSelectedClear()
                     } catch (e: Exception) { error = e.message ?: "Upload failed." }
                     finally { busy = false }
                 }

@@ -296,7 +296,8 @@ fun JsonEvidence(result: JSONObject) {
     keys.forEach { key ->
         val raw = result.opt(key)
         val detail = when (raw) {
-            is JSONObject, is JSONArray -> raw.toString(2).take(1800)
+            is JSONObject -> raw.toString(2).take(1800)
+            is JSONArray -> raw.toString(2).take(1800)
             null, JSONObject.NULL -> "Unavailable"
             else -> raw.toString().take(1800)
         }

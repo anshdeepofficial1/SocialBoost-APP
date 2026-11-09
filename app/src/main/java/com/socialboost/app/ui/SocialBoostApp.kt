@@ -148,6 +148,7 @@ private fun Authentication(api: SocialApi, session: SecureSession, onSuccess: ()
 }
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 private fun StudioShell(
     api: SocialApi,
     account: JSONObject?,
