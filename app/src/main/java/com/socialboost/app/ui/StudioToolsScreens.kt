@@ -181,6 +181,7 @@ fun PlatformsScreen(api: SocialApi) {
 fun YouTubeScreen(api: SocialApi) {
     var channel by remember { mutableStateOf("") }
     var query by remember { mutableStateOf("") }
+    var showCompetitors by remember { mutableStateOf(false) }
     Headline("YOUTUBE STUDIO", "Know the channel.", "Read public channel information through the SocialBoost server. The server needs YouTube API configuration or an authorized Google account.")
     SbCard {
         OutlinedTextField(channel, { channel = it.trim().take(250) }, modifier = Modifier.fillMaxWidth(), label = { Text("@handle, URL or channel ID") })
@@ -196,6 +197,34 @@ fun YouTubeScreen(api: SocialApi) {
             TextButton(onClick = refresh) { Text("Refresh results") }
         }
     } else MessagePanel("Enter a channel", "YouTube channel insights are retrieved only when you request them.")
+    Spacer(Modifier.height(15.dp))
+    OutlinedButton(onClick = { showCompetitors = !showCompetitors }, modifier = Modifier.fillMaxWidth()) {
+        Text(if (showCompetitors) "Hide competitor research" else "Find real comparable channels")
+    }
+    if (showCompetitors) {
+        Spacer(Modifier.height(10.dp))
+        RemotePanel("youtube_competitors", load = {
+            api.request("/youtube/competitors?limit=6")
+        }) { data, refresh ->
+            val root = data.asObject()
+            SectionEyebrow("RESEARCH · PROVIDER DATA")
+            DataRow("Search topic", root.value("query"))
+            val peers = root.optJSONArray("competitors") ?: JSONArray()
+            if (peers.length() == 0) MessagePanel("No results", "No matching channels were returned by YouTube. Connect your real channel to enable niche research.")
+            for (i in 0 until peers.length()) {
+                val peer = peers.optJSONObject(i) ?: continue
+                Spacer(Modifier.height(9.dp))
+                SbCard {
+                    Text(peer.value("title"), style = MaterialTheme.typography.titleMedium)
+                    DataRow("Subscribers", peer.numberLabel("subscribers"))
+                    DataRow("Public views", peer.numberLabel("total_views"))
+                    DataRow("Published videos", peer.numberLabel("video_count"))
+                    DataRow("Topics", peer.value("matched_topics"))
+                }
+            }
+            TextButton(onClick = refresh) { Text("Refresh research") }
+        }
+    }
 }
 
 @Composable
